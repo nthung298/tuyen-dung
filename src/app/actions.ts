@@ -120,7 +120,7 @@ export async function createJob(data: JobInput) {
         slug,
         title: data.title,
         department: data.department,
-        jobType: data.jobType,
+        jobType: data.jobType === 'full-time' ? 'full_time' : data.jobType === 'part-time' ? 'part_time' : 'contract',
         location: data.location,
         description: data.description,
         responsibilities: stringifyJsonField(data.responsibilities),
@@ -221,14 +221,6 @@ export async function getApplications() {
   try {
     const applications = await prisma.applications.findMany({
       orderBy: { submittedAt: 'desc' },
-      include: {
-        jobs: {
-          select: {
-            title: true,
-            slug: true,
-          },
-        },
-      },
     });
     
     return applications;

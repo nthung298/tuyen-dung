@@ -1,3 +1,54 @@
 {
-  "pages": {}
+  "pages": {
+    "/not-found": [
+      "static/chunks/webpack-ea3c8b0f00bdc6d3.js",
+      "static/chunks/fd9d1056-a5dcb6553579cec7.js",
+      "static/chunks/117-3b33ac9e21462486.js",
+      "static/chunks/main-app-8e3143ba71d9dd6e.js",
+      "static/chunks/972-1ac0e0b7b40be0fe.js",
+      "static/chunks/app/not-found-50a081eee7561f31.js"
+    ],
+    "/_not-found/page": [
+      "static/chunks/webpack-ea3c8b0f00bdc6d3.js",
+      "static/chunks/fd9d1056-a5dcb6553579cec7.js",
+      "static/chunks/117-3b33ac9e21462486.js",
+      "static/chunks/main-app-8e3143ba71d9dd6e.js",
+      "static/chunks/app/_not-found/page-c1bbe1b4bc8170a6.js"
+    ],
+    "/layout": [
+      "static/chunks/webpack-ea3c8b0f00bdc6d3.js",
+      "static/chunks/fd9d1056-a5dcb6553579cec7.js",
+      "static/chunks/117-3b33ac9e21462486.js",
+      "static/chunks/main-app-8e3143ba71d9dd6e.js",
+      "static/css/a7ceee5c629d8ff1.css",
+      "static/css/159b66e15e76c6ac.css",
+      "static/chunks/972-1ac0e0b7b40be0fe.js",
+      "static/chunks/app/layout-d4d0a218d1099445.js"
+    ],
+    "/[slug]/page": [
+      "static/chunks/webpack-ea3c8b0f00bdc6d3.js",
+      "static/chunks/fd9d1056-a5dcb6553579cec7.js",
+      "static/chunks/117-3b33ac9e21462486.js",
+      "static/chunks/main-app-8e3143ba71d9dd6e.js",
+      "static/chunks/972-1ac0e0b7b40be0fe.js",
+      "static/chunks/407-9168040ec7f367b0.js",
+      "static/chunks/app/[slug]/page-1ef3e48aab7f2505.js"
+    ],
+    "/page": [
+      "static/chunks/webpack-ea3c8b0f00bdc6d3.js",
+      "static/chunks/fd9d1056-a5dcb6553579cec7.js",
+      "static/chunks/117-3b33ac9e21462486.js",
+      "static/chunks/main-app-8e3143ba71d9dd6e.js",
+      "static/chunks/972-1ac0e0b7b40be0fe.js",
+      "static/chunks/app/page-26888d8a485549d8.js"
+    ],
+    "/quan-tri/page": [
+      "static/chunks/webpack-ea3c8b0f00bdc6d3.js",
+      "static/chunks/fd9d1056-a5dcb6553579cec7.js",
+      "static/chunks/117-3b33ac9e21462486.js",
+      "static/chunks/main-app-8e3143ba71d9dd6e.js",
+      "static/chunks/407-9168040ec7f367b0.js",
+      "static/chunks/app/quan-tri/page-267a4138822e7073.js"
+    ]
+  }
 }
