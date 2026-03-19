@@ -1,0 +1,233 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model banners {
+  id            Int       @id @default(autoincrement())
+  title         String    @db.VarChar(255)
+  image_url     String    @db.VarChar(255)
+  link_url      String?   @db.VarChar(255)
+  description   String?   @db.Text
+  display_order Int       @default(0)
+  is_active     Boolean   @default(true)
+  created_at    DateTime  @default(now())
+  updated_at    DateTime
+  deleted_at    DateTime?
+}
+
+model categories {
+  id              Int               @id @default(autoincrement())
+  name            String            @db.VarChar(150)
+  slug            String            @unique @db.VarChar(150)
+  description     String?           @db.Text
+  parent_id       Int               @default(0)
+  display_order   Int               @default(0)
+  created_at      DateTime          @default(now())
+  updated_at      DateTime
+  deleted_at      DateTime?
+  post_categories post_categories[]
+}
+
+model cloudinary_accounts {
+  id         Int       @id @default(autoincrement())
+  name       String    @db.VarChar(150)
+  cloud_name String    @unique @db.VarChar(100)
+  api_key    String    @db.VarChar(255)
+  api_secret String    @db.Text
+  is_active  Boolean   @default(true)
+  is_primary Boolean   @default(false)
+  created_at DateTime  @default(now())
+  updated_at DateTime
+  deleted_at DateTime?
+  uploads    uploads[]
+
+  @@index([is_active])
+}
+
+model events {
+  id         Int       @id @default(autoincrement())
+  name       String    @db.VarChar(150)
+  start_time DateTime
+  end_time   DateTime
+  title      String    @db.VarChar(255)
+  content    String    @db.LongText
+  banner_url String?   @db.VarChar(255)
+  location   String    @db.VarChar(255)
+  created_at DateTime  @default(now())
+  updated_at DateTime
+  deleted_at DateTime?
+}
+
+model permissions {
+  role_id     Int
+  can_view    Boolean  @default(false)
+  can_edit    Boolean  @default(false)
+  can_delete  Boolean  @default(false)
+  created_at  DateTime @default(now())
+  updated_at  DateTime
+  feature_key String
+  roles       roles    @relation(fields: [role_id], references: [id], onDelete: Cascade)
+
+  @@id([role_id, feature_key])
+}
+
+model post_categories {
+  post_id     Int
+  category_id Int
+  is_primary  Boolean    @default(false)
+  created_at  DateTime   @default(now())
+  updated_at  DateTime
+  categories  categories @relation(fields: [category_id], references: [id], onDelete: Cascade)
+  posts       posts      @relation(fields: [post_id], references: [id], onDelete: Cascade)
+
+  @@id([post_id, category_id])
+  @@index([category_id])
+}
+
+model posts {
+  id              Int               @id @default(autoincrement())
+  title           String            @db.VarChar(255)
+  slug            String            @db.VarChar(255)
+  excerpt         String?           @db.Text
+  content         String            @db.LongText
+  thumbnail_url   String?           @db.VarChar(255)
+  status          posts_status      @default(draft)
+  view_count      Int               @default(0)
+  author_id       Int
+  created_at      DateTime          @default(now())
+  updated_at      DateTime
+  published_at    DateTime?
+  deleted_at      DateTime?
+  post_categories post_categories[]
+  users           users             @relation(fields: [author_id], references: [id])
+
+  @@index([author_id], map: "posts_author_id_fkey")
+}
+
+model refresh_tokens {
+  id          Int       @id @default(autoincrement())
+  user_id     Int
+  jti         String    @unique @db.VarChar(64)
+  family_id   String    @db.VarChar(64)
+  parent_jti  String?   @db.VarChar(64)
+  token_hash  String    @unique @db.Char(64)
+  created_at  DateTime  @default(now())
+  expires_at  DateTime
+  consumed_at DateTime?
+  revoked_at  DateTime?
+  users       users     @relation(fields: [user_id], references: [id])
+
+  @@index([family_id])
+  @@index([user_id])
+}
+
+model roles {
+  id           Int           @id @default(autoincrement())
+  name         String        @unique @db.VarChar(50)
+  display_name String        @db.VarChar(100)
+  description  String?       @db.VarChar(255)
+  permissions  permissions[]
+  user_roles   user_roles[]
+}
+
+model uploads {
+  id                    Int                  @id @default(autoincrement())
+  public_id             String               @db.VarChar(255)
+  url                   String               @db.VarChar(1024)
+  resource_type         String               @db.VarChar(50)
+  bytes                 Int?
+  width                 Int?
+  height                Int?
+  format                String?              @db.VarChar(50)
+  folder                String?              @db.VarChar(255)
+  original_filename     String?              @db.VarChar(255)
+  uploaded_by_user_id   Int?
+  created_at            DateTime             @default(now())
+  deleted_at            DateTime?
+  updated_at            DateTime             @default(now())
+  cloudinary_account_id Int?
+  cloudinary_accounts   cloudinary_accounts? @relation(fields: [cloudinary_account_id], references: [id])
+  users                 users?               @relation(fields: [uploaded_by_user_id], references: [id])
+
+  @@index([cloudinary_account_id], map: "uploads_cloudinary_account_id_fkey")
+  @@index([uploaded_by_user_id], map: "uploads_uploaded_by_user_id_fkey")
+}
+
+model user_roles {
+  user_id Int
+  role_id Int
+  roles   roles @relation(fields: [role_id], references: [id])
+  users   users @relation(fields: [user_id], references: [id])
+
+  @@id([user_id, role_id])
+  @@index([role_id], map: "user_roles_role_id_fkey")
+}
+
+model users {
+  id             Int              @id @default(autoincrement())
+  username       String           @unique @db.VarChar(50)
+  password_hash  String           @db.Text
+  full_name      String?          @db.VarChar(100)
+  email          String           @unique @db.VarChar(100)
+  avatar_url     String?          @db.VarChar(255)
+  status         Int              @default(1)
+  created_at     DateTime         @default(now())
+  updated_at     DateTime
+  deleted_at     DateTime?
+  posts          posts[]
+  refresh_tokens refresh_tokens[]
+  uploads        uploads[]
+  user_roles     user_roles[]
+}
+
+model jobs {
+  id               String       @id @default(cuid())
+  slug             String       @unique(map: "slug")
+  title            String       @db.VarChar(255)
+  department       String       @db.VarChar(255)
+  jobType          jobs_jobType
+  location         String       @db.VarChar(255)
+  description      String?      @db.Text
+  responsibilities String?      @db.LongText
+  requirements     String?      @db.LongText
+  benefits         String?      @db.LongText
+  deadline         DateTime     @db.Date
+  contactEmail     String?      @db.VarChar(255)
+  createdAt        DateTime     @default(now()) @db.Date
+
+  @@index([deadline], map: "idx_deadline")
+  @@index([department], map: "idx_department")
+  @@index([slug], map: "idx_slug")
+}
+
+model applications {
+  id          String   @id @default(cuid())
+  jobId       String
+  name        String   @db.VarChar(255)
+  email       String   @db.VarChar(255)
+  phone       String   @db.VarChar(50)
+  cvFile      String?  @db.VarChar(500)
+  coverLetter String?  @db.Text
+  submittedAt DateTime @default(now()) @db.DateTime(0)
+
+  @@index([email], map: "idx_email")
+  @@index([jobId], map: "idx_jobId")
+}
+
+enum posts_status {
+  draft
+  pending
+  published
+  rejected
+}
+
+enum jobs_jobType {
+  full_time @map("full-time")
+  part_time @map("part-time")
+  contract
+}
